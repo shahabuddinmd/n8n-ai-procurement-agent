@@ -1,0 +1,128 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Vendor Quotation Form",
+        "formDescription": "Quotation",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload Quotations",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "10f53190-75d6-460c-8ce7-a7c95aef4eb6",
+      "name": "On form submission",
+      "webhookId": "22078fac-b9db-4474-8316-e16fc038c5ea"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Upload_Quotations_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "668c23bf-3b4a-470c-ba7f-e130d3dd50b6",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the vendor quotation data provided below: {{ $json.text }}. Compare each vendor's total price, delivery time, and terms. Determine which vendor is the best choice with specific reasons, and give the final report strictly in English.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "a9195608-47d6-4e50-931d-23c0f536ef2d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        208
+      ],
+      "id": "0279b1ef-b78b-48cb-96f5-be777c6f3295",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1d30ff51-b562-4d29-bdd3-8fcf2ddce345",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f20023135a5e3c9035426a71e16c581804b0a266f3e8773816b6a8d9ecae683e"
+  },
+  "nodeGroups": [],
+  "id": "JRSiLQsq2GHJGJgk",
+  "tags": []
+}
